@@ -8,24 +8,19 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -42,7 +37,7 @@ fun Home(modifier: Modifier = Modifier) {
     val coroutineScope = rememberCoroutineScope()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val snackBarHostState = remember { SnackbarHostState() }
-
+    val snackBarMessage = stringResource(R.string.not_available_yet)
     val currentDestination by remember(navBackStackEntry) {
         derivedStateOf {
             navBackStackEntry.value?.destination?.route?.let {
@@ -70,37 +65,22 @@ fun Home(modifier: Modifier = Modifier) {
         Scaffold(
             modifier = modifier,
             topBar = {
-                val snackBarMessage = stringResource(R.string.not_available_yet)
-                TopAppBar(
-                    title = { Text(text = Destination.Home.title) },
-                    navigationIcon = {
-                        IconButton(onClick = {
-                            coroutineScope.launch { drawerState.open() }
-                        }
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Menu,
-                                contentDescription = stringResource(R.string.cd_open_menu)
+                DestinationTopBar(
+                    destination = currentDestination,
+                    onNavigateUp = {
+                        navController.popBackStack()
+                    },
+                    onOpenDrawer = {
+                        coroutineScope.launch { drawerState.open() }
+                    },
+                    showSnackBar = { message ->
+                        coroutineScope.launch {
+                            snackBarHostState.showSnackbar(
+                                message = message,
+                                duration = SnackbarDuration.Short
                             )
                         }
-                    },
-                    actions = {
-                        if (currentDestination != Destination.Feed) {
-                            IconButton(onClick = {
-                                coroutineScope.launch {
-                                    snackBarHostState.showSnackbar(
-                                        snackBarMessage
-                                    )
-                                }
-                            }) {
-                                Icon(
-                                    imageVector = Icons.Default.Info,
-                                    contentDescription = stringResource(R.string.cd_more_information)
-                                )
-                            }
-                        }
-                    },
-                    colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Blue)
+                    }
                 )
             },
             floatingActionButton = {

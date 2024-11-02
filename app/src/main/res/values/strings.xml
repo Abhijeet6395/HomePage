@@ -7,4 +7,5 @@
     <string name="label_email">abhijeet@gmail.com</string>
     <string name="log_out">Log Out</string>
     <string name="cd_open_menu">Open Menu</string>
+    <string name="cd_navigate_up">Go Back Home</string>
 </resources>

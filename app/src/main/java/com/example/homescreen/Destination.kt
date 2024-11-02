@@ -15,8 +15,8 @@ sealed class Destination(val path: String, val icon: ImageVector? = null, val ti
     data object Feed : Destination("feed", Icons.Default.List, title = "Feed")
     data object Contacts : Destination("contacts", Icons.Default.Person, title = "Contacts")
     data object Calendar : Destination("calendar", Icons.Default.DateRange, title = "Calendar")
-    data object Settings:Destination("settings", Icons.Default.Settings,title = "Settings")
-    data object Upgrade:Destination("upgrade",Icons.Default.Warning, title = "Upgrade")
+    data object Settings:Destination("settings", Icons.Default.Settings,title = "Settings", isRootDestination = false)
+    data object Upgrade:Destination("upgrade",Icons.Default.Warning, title = "Upgrade",isRootDestination = false)
 
     companion object{
         fun fromString(route: String?): Destination{
